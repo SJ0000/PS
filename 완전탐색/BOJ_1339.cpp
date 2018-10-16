@@ -11,10 +11,24 @@ using namespace std;
 
 int N;
 
-string sumStr[8];
+string sumStr[10];
 bool usedChar[27];
 map<char, int> mymap;
-//제일큰거를 9로
+
+int str_to_int(vector<int> perm) {
+	int ret = 0;
+	int tmp = 0;
+	for (int i = 0; i < N; i++) {
+		tmp = 0;
+		string s = sumStr[i];
+		for (int j = 0; j < s.size(); j++) {
+			tmp += perm[mymap[s[j]]]; tmp *= 10;
+		}
+		tmp /= 10;
+		ret += tmp;
+	}
+	return ret;
+}
 int getAns() {
 	//완탐
 	int ret = 0;
@@ -22,22 +36,9 @@ int getAns() {
 	for (int i = 10 - mymap.size(); i <= 9; i++) {
 		perm.push_back(i);
 	}
-	int tmp = 0;
 	do {
-		for (int i = 0; i < 7; i++) {
-
-			for (int j = 0; j < sumStr[i].size(); j++) {
-
-			}
-
-
-
-
-		}
+		ret = max(ret, str_to_int(perm));
 	} while (next_permutation(perm.begin(), perm.end()));
-
-	
-
 
 	return ret;
 }
@@ -52,16 +53,17 @@ int main()
 	int idx = 0;
 	for (int i = 0; i < N; i++) {
 		cin >> s;
-		//문자열단위로 합친다.
+		sumStr[i] = s;
+		//map에 쓴거 index 저장.
 		for (int j = 0; j < s.size(); j++) {
 			if (!usedChar[s[j] - 'A']) {
 				mymap.insert(make_pair(s[j], idx++));
 				usedChar[s[j] - 'A'] = true;
 			}
-			sumStr[s.size() - j - 1] += s[j];
 		}
 	}	
 
 	int ans = getAns();
+	printf("%d\n", ans);
 	return 0;
 }
