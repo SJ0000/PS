@@ -4,6 +4,7 @@
 #include <string>
 #include <string.h>
 #include <vector>
+#include <queue>
 #include <set>
 #include <map>
 #include <climits>
