@@ -1,64 +1,78 @@
 #include <cstdio>
 #include <iostream>
 #include <algorithm>
-#include <string.h>
 #include <string>
+#include <string.h>
 #include <vector>
+#include <queue>
+#include <set>
+#include <map>
+#include <climits>
 
 using namespace std;
 
-int a[9][9] = { 0, };
-bool row_check[9][10] = { false, };
-bool col_check[9][10] = { false, };
-bool sq_check[9][10] = { false, };
+int a[9][9];
+vector<int> zero;
+bool complete;
 
-
-void dfs() {
-	int x = -1, y = -1;
+//a[x][y]에 input이 들어갈 수 있으면 true
+bool check(int x, int y, int input) {
+	//가로,세로
 	for (int i = 0; i < 9; i++) {
-		for (int j = 0; j < 9; j++) {
-			if (a[i][j] == 0) {
-				x = i; y = j;
-				break;
-			}
-		}
-		if (x != -1) break;
+		if (a[x][i] == input || a[i][y] == input) return false;
 	}
+	//사각형
+	int sqx = (x / 3) * 3;
+	int sqy = (y / 3) * 3;
+	for (int i = sqx; i < sqx + 3; i++) {
+		for (int j = sqy; j < sqy + 3; j++) {
+			if (a[i][j] == input) return false;
+		}
+	}
+	return true;
+}
 
-	if (x == -1) {
-		//완성
-		for (int i = 0; i < 8; i++) {
+
+void solve(int idx) {
+
+	if (zero.size() == idx) {
+		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
 				printf("%d ", a[i][j]);
 			}
 			printf("\n");
 		}
-		for (int i = 0; i < 9; i++) {
-			printf("%d ", a[8][i]);
-		}
 		exit(0);
 	}
 
-	//search
-	for (int val = 1; val <= 9; val++) {
-		//해당좌표의 row,col,sq 가 다 비어있을경우.
-		if (!row_check[x][val] && !col_check[y][val] && !sq_check[(x / 3) * 3 + y][val]) {
-			row_check[x][val] = col_check[y][val] = sq_check[(x / 3) * 3 + y][val] = true;
-			a[x][y] = val;
-			dfs();
-			a[x][y] = 0;
-			row_check[x][val] = col_check[y][val] = sq_check[(x / 3) * 3 + y][val] = false;
+	int	nowx = zero[idx] / 10;
+	int	nowy = zero[idx] % 10;
+
+	//가로,세로,사각형 검사해서 넣을수있으면 넣고 백트래킹
+	for (int input = 1; input <= 9; input++) {
+		if (check(nowx, nowy, input)) {
+			a[nowx][nowy] = input;
+			solve(idx + 1);
+			if (complete) return;
+			a[nowx][nowy] = 0;
 		}
 	}
+
+	return;
 }
 
-int main()
-{
+int main() {
+
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
 			scanf("%d", &a[i][j]);
+			if (a[i][j] == 0) {
+				zero.push_back(i * 10 + j);
+			}
 		}
 	}
-	dfs();
+	complete = false;
+	solve(0);
+
 	return 0;
 }
