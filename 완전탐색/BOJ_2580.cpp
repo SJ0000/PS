@@ -13,7 +13,6 @@ using namespace std;
 
 int a[9][9];
 vector<int> zero;
-bool complete;
 
 //a[x][y]에 input이 들어갈 수 있으면 true
 bool check(int x, int y, int input) {
@@ -31,7 +30,6 @@ bool check(int x, int y, int input) {
 	}
 	return true;
 }
-
 
 void solve(int idx) {
 
@@ -53,11 +51,9 @@ void solve(int idx) {
 		if (check(nowx, nowy, input)) {
 			a[nowx][nowy] = input;
 			solve(idx + 1);
-			if (complete) return;
 			a[nowx][nowy] = 0;
 		}
 	}
-
 	return;
 }
 
@@ -71,8 +67,6 @@ int main() {
 			}
 		}
 	}
-	complete = false;
 	solve(0);
-
 	return 0;
 }
